@@ -2,7 +2,6 @@ const Pet = require('../src/pet');
 
 describe('constructor', () => {
   const pet = new Pet('Fido');
-
   it('returns an object', () => {
     expect(new Pet('Fido')).toBeInstanceOf(Object);
   });
@@ -59,6 +58,10 @@ describe('feed', () => {
   beforeEach(() => {
     pet = new Pet('Fido');
   });
+  it('throws an error if the pet is not alive', () => {
+    pet.age = 30;
+    expect(() => pet.feed()).toThrow('Your pet is no longer alive :(');
+  });
   it('descreases hunger by 3', () => {
     pet.hunger = 5;
     pet.feed();
@@ -76,22 +79,48 @@ describe('checkUp', () => {
   beforeEach(() => {
     pet = new Pet('Fido');
   });
-  it('expects checkUp() to return walk prompt if fitness is 3 or less', () => {
+  // it('expects a pet not alive error if checkUp is run and the pet is no longer alive', () => {
+  //   pet.age = 29;
+  //   expect(pet.isAlive).toThrow('Your pet is no longer alive :(');
+  // });
+  it('expects checkUp to return walk prompt if fitness is 3 or less', () => {
     pet.fitness = 2;
     expect(pet.checkUp()).toEqual('I need a walk');
   });
-  it('expects checkUp() to return hunger prompt if hunger is 5 or more', () => {
+  it('expects checkUp to return hunger prompt if hunger is 5 or more', () => {
     pet.hunger = 6;
     expect(pet.checkUp()).toEqual('I am hungry');
   });
-  it('expects checkUp() to return hunger and walk prompt if fitness is 3 or less and hunger is 5 or more', () => {
+  it('expects checkUp to return hunger and walk prompt if fitness is 3 or less and hunger is 5 or more', () => {
     pet.fitness = 2;
     pet.hunger = 6;
     expect(pet.checkUp()).toEqual('I am hungry AND I need a walk');
   });
-  it('expects checkUp() to return fine prompt if fitness is grester than 3 and hunger is less than 5', () => {
+  it('expects checkUp to return fine prompt if none of the above criteria are met', () => {
     pet.fitness = 5;
     pet.hunger = 3;
     expect(pet.checkUp()).toEqual('I feel great!');
+  });
+});
+
+describe('isAlive', () => {
+  let pet;
+  beforeEach(() => {
+    pet = new Pet('Fido');
+  });
+  it('expects false if the pets fitness is 0 or less', () => {
+    pet.fitness = 0;
+    expect(pet.isAlive).toEqual(false);
+  });
+  it('expects false if the pets hunger is 10 or more', () => {
+    pet.hunger = 11;
+    expect(pet.isAlive).toEqual(false);
+  });
+  it('expects false if the pets age is 30 or more', () => {
+    pet.age = 30;
+    expect(pet.isAlive).toEqual(false);
+  });
+  it('expects true if none of the above criteria are met', () => {
+    expect(pet.isAlive).toEqual(true);
   });
 });
