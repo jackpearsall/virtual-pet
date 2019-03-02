@@ -132,3 +132,30 @@ describe('isAlive', () => {
     expect(pet.isAlive).toEqual(true);
   });
 });
+
+describe('adoptChild', () => {
+  let parent;
+  beforeEach(() => {
+    parent = new Pet('Fido');
+  });
+  it('throws an error if adoptChild is run and the  pet is dead', () => {
+    parent.age = 30;
+    expect(() => parent.adoptChild()).toThrow('Your pet is no longer alive :(');
+  });
+  it('adopts a child with the same properties of the parent Pet', () => {
+    const child = new Pet('Scooby');
+    parent.adoptChild(child);
+    expect(parent.children).toEqual([{
+      name: 'Scooby', age: 0, hunger: 0, fitness: 10, children: [],
+    }]);
+    expect(parent).toEqual({
+      name: 'Fido',
+      age: 0,
+      hunger: 0,
+      fitness: 10,
+      children: [{
+        name: 'Scooby', age: 0, hunger: 0, fitness: 10, children: [],
+      }],
+    });
+  });
+});
